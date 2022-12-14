@@ -21,6 +21,8 @@
     "vue-tsc": "^1.0.9"
   },
   "dependencies": {
-    "cookie-universal": "^2.2.2"
+    "@pinia/nuxt": "^0.4.6",
+    "cookie-universal": "^2.2.2",
+    "pinia": "^2.0.28"
   }
 }

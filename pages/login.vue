@@ -29,25 +29,23 @@
   </div>
 </template>
 <script lang="ts" setup>
+import { storeToRefs } from 'pinia';
+import { useAuthStore } from '~/store/auth';
+
+const { authenticateUser } = useAuthStore(); // use auth store
+
+const { authenticated } = storeToRefs(useAuthStore()); // make authenticated state reactive
+
 const user = ref({
   username: 'kminchelle',
   password: '0lelplR',
 });
 const router = useRouter();
-const { $cookies } = useNuxtApp();
-const auth = useAuth();
+
 const login = async () => {
-  const { data } = await useFetch('https://dummyjson.com/auth/login', {
-    method: 'post',
-    headers: { 'Content-Type': 'application/json' },
-    body: {
-      username: user.value.username,
-      password: user.value.password,
-    },
-  });
-  if (data.value) {
-    $cookies.set('token', data?.value?.token);
-    auth.value.authenticated = true;
+  await authenticateUser(user.value);
+  // redirect to homepage if user is authenticated
+  if (authenticated) {
     router.push('/');
   }
 };

@@ -5,7 +5,8 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "deploy": "gh-pages -d dist"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config-typescript": "^12.0.0",
@@ -23,6 +24,7 @@
   "dependencies": {
     "@pinia/nuxt": "^0.4.6",
     "cookie-universal": "^2.2.2",
-    "pinia": "^2.0.28"
+    "pinia": "^2.0.28",
+    "gh-pages": "^4.0.0"
   }
 }

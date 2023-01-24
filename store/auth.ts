@@ -8,32 +8,31 @@ interface UserPayloadInterface {
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     authenticated: false,
+    loading: false,
   }),
   actions: {
-    async authenticateUser(user: UserPayloadInterface) {
+    async authenticateUser({ username, password }: UserPayloadInterface) {
       // useFetch from nuxt 3
-      const { data }: any = await useFetch('https://dummyjson.com/auth/login', {
+      const { data, pending }: any = await useFetch('https://dummyjson.com/auth/login', {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
         body: {
-          username: user.username,
-          password: user.password,
+          username,
+          password,
         },
       });
+      this.loading = pending;
 
       if (data.value) {
-        const { $cookies } = useNuxtApp(); // import custom cookie plugin
-        $cookies.set('token', data?.value?.token); // set token to cookie
-        this.setAuthentication();
+        const token = useCookie('token'); // useCookie new hook in nuxt 3
+        token.value = data?.value?.token; // set token to cookie
+        this.authenticated = true; // set authenticated  state value to true
       }
     },
-    setAuthentication() {
-      this.authenticated = true; // set authenticated  state value to true
-    },
     logUserOut() {
-      const { $cookies } = useNuxtApp(); // import custom cookie plugin
+      const token = useCookie('token'); // useCookie new hook in nuxt 3
       this.authenticated = false; // set authenticated  state value to false
-      $cookies.removeAll(); // clear all cookies
+      token.value = null; // clear the token cookie
     },
   },
 });

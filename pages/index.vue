@@ -1,9 +1,4 @@
 <template>
-  <div>
-    Home Page {{ title }}
-    <hello />
-  </div>
+  <div>Home Page</div>
 </template>
-<script lang="ts" setup>
-const { title } = useTitle();
-</script>
+<script lang="ts" setup></script>

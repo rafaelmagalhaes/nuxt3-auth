@@ -1,17 +1,14 @@
-### How to add authentication to a nuxt 3 project
+### How to add authentication in nuxt 3
 
-I've seen a few tutorials on this subject but most of them cover authentication with Supabase, Amplify or Firebase,
-most of these services have a nuxt component which makes it easier to add authentication to your website.
+I've seen a few tutorials on this subject but most of them cover authentication with Supabase, Amplify or Firebase, most of these services have a nuxt component which makes it easier to add authentication to your website.
 
-If you are like me and use the middleware to handle the authentication state 
-of your application by calling an endpoint which provides a token. 
-I will show you how to do this in nuxt 3.
+If you are like me and use the middleware to handle the authentication state of your application by calling an endpoint which provides a token. I will show you how to do this in nuxt 3.
 
-I will be using `DummyJSON` fake API to help me do this.
+I will be using  [DummyJSON](https://dummyjson.com/) fake API to help me do this.
 
 ##### What is DummyJSON?
 
-> With DummyJSON, what you get is different types of REST Endpoints filled with JSON data which you can use in developing the frontend with your favorite framework and library without worrying about writing a backend.
+> With DummyJSON, what you get is different types of REST Endpoints filled with JSON data which you can use in developing the frontend with your favourite framework and library without worrying about writing a backend.
 
 Essentially it's a mock API with few endpoints, most importantly it provides a rest login endpoint which returns a fake token.
 
@@ -22,7 +19,7 @@ first lets start by creating a project
 
 `npx nuxi init nuxt3-auth`
 
-Create the following folders/files in the root of project
+Create the following folders/files in the root of the project
 
 - pages
   - index.vue
@@ -52,7 +49,7 @@ delete `app.vue`
 <script lang="ts" setup></script>
 ```
 
-Login page is going to be very simple just username and password fields with a login button
+The login page is going to be a very simple just username and password fields with a login button
 
 `pages/login.vue`
 ```html
@@ -93,7 +90,7 @@ const user = ref({
 });
 
 const login = async () => {
-  // TODO send user Data to login endpoint and redirect if  successful 
+  // TODO send user Data to the login endpoint and redirect if  successful 
 };
 </script>
 ```
@@ -101,10 +98,9 @@ const login = async () => {
 Creating our default layout 
 
 > Nuxt provides a customizable layouts framework you can use throughout your application, ideal for extracting common UI or code patterns into reusable layout components.
-> Layouts are placed in the `layouts/` directory and will be automatically loaded via asynchronous import when used.
+Layouts are placed in the `layouts/` directory and will be automatically loaded via asynchronous import when used.
 
-Our layout is going to consist of a navbar with Home, About, Login links, and footer at the bottom with our content in middle
-the `<slot/>` will automatically be replaced with our code in the pages
+Our layout is going to consist of a navbar with Home, About, and Login links, and a footer at the bottom with our content in the middle the `<slot/>` will automatically be replaced with our code in the pages
 
 `layouts/default.vue`
 ```html
@@ -132,8 +128,7 @@ the `<slot/>` will automatically be replaced with our code in the pages
 ### Middlewares
 
 > Nuxt provides a customizable route middleware framework you can use throughout your application, ideal for extracting code that you want to run before navigating to a particular route.
-
-> Route middleware are navigation guards that receive the current route and the next route as arguments.
+Route middleware is navigation guards that receive the current route and the next route as arguments.
 
 We are going to create a named route middleware. which is placed in the `middleware/` directory and will be automatically loaded via asynchronous import when used on a page.
 
@@ -143,36 +138,34 @@ export default defineNuxtRouteMiddleware((to, from) => {
     console.log('From auth middleware')
 })
 ```
-add a console log to verify this is working in our homepage we can now add this middleware
+add a console log to verify this is working on our homepage we can now add this middleware
 
 `pages/index.vue`
-```vue
+```html
 <template>
   <div>Hello Home Page</div>
 </template>
 <script lang="ts" setup>
   definePageMeta({
-    middleware: 'auth' // this should match the name of the file inside middleware directory 
+    middleware: 'auth' // this should match the name of the file inside the middleware directory 
 })
 </script>
 ```
 run the code and check and verify if you can see the `console.log`
 
-in this case i want to protect every route so how do i make this middleware global? 
-we just need to add `.global` suffix to our file like so `auth.global.ts` and it will be automatically run on every route change.
+in this case, I want to protect every route so how do I make this middleware global? we just need to add the `.global` suffix to our file like so `auth.global.ts` and it will automatically run on every route change.
 
 we can now remove this piece of code from the homepage
 
-```js
+```javascript
   definePageMeta({
-    middleware: 'auth' // this should match the name of the file inside middleware directory 
+    middleware: 'auth' // this should match the name of the file inside the middleware directory 
 })
 ```
 
 ### Store with Pinia
 
-I'm going to create an auth store to handle login and the authenticated state. 
-I've already covered an article on how to set up Pinia in nuxt 3. [Pinia and Nuxt 3](https://dev.to/rafaelmagalhaes/pinia-and-nuxt-3-4ij5)
+I'm going to create an auth store to handle login and the authenticated state.  I've already covered an article on how to set up Pinia in nuxt 3. [Pinia and Nuxt 3](https://dev.to/rafaelmagalhaes/pinia-and-nuxt-3-4ij5)
 
 
 ```typescript
@@ -219,8 +212,7 @@ export const useAuthStore = defineStore('auth', {
 ```
 We have two actions `authenticateUser` and `logUserOut`
 
-`authenticateUser` function receives a payload of username and password, then we make a post request using the `useFetch` hook 
-to `/auth/login` endpoint from [dummyjson](https://dummyjson.com/docs/auth), we pass username and password in the body.
+`authenticateUser` function receives a payload of username and password, then we make a post request using the `useFetch` hook to `/auth/login` endpoint from [dummyjson](https://dummyjson.com/docs/auth), we pass username and password in the body.
  we should receive a response like so
 
 ```json
@@ -278,7 +270,7 @@ const login = async () => {
 
 #### layouts
 
-in the default layout now we display a login/logout button according to the state of our app and handle the logout event
+in the default layout we now display a login/logout button according to the state of our app and handle the logout event
 
 adjust the navbar to show and or hide the buttons based on the `authenticated` state
 
@@ -312,7 +304,7 @@ const logout = () => {
 
 #### middleware
 
-Now in middleware we can handle the authentication based on value of the token in the cookies.
+Now in middleware, we can handle the authentication based on the value of the token in the cookies.
 
 ```typescript
 export default defineNuxtRouteMiddleware((to) => {
@@ -336,3 +328,11 @@ export default defineNuxtRouteMiddleware((to) => {
   }
 });
 ```
+
+### Preview
+
+![](https://sli1n332.directus.app/assets/63bcc93a-be69-49a3-83e2-a95eca72e3ec)
+
+Repo:  [github](https://github.com/rafaelmagalhaes/nuxt3-auth)
+
+
